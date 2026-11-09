@@ -1,0 +1,6 @@
+alert_id,zone_id,title,severity,signal,time_ago,recommended_action
+FA-001,RZ-002,Canopy Fragmentation Warning,high,Sentinel-2 NDVI delta,2h ago,Dispatch drone inspection and patrol unit
+FA-002,RZ-001,Habitat Stress Increase,high,Waterbody retention deficit,45m ago,Monitor migration corridor and alert rangers
+FA-003,RZ-004,Salinity-driven displacement risk,critical,Surface water salinity anomaly,18m ago,Trigger anti-poaching and village alert
+FA-004,RZ-005,Settlement breach risk,high,Kalman trajectory intersection,12m ago,Deploy deterrent squad to sector 4 west
+FA-005,RZ-003,Wetland inundation alert,medium,NDWI flood spike,1h ago,Monitor floodplain movement and rescue support

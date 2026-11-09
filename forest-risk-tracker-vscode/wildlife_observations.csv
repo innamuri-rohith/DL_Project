@@ -1,0 +1,6 @@
+obs_id,zone_id,species,category,confidence,lat,lon,source,status,time_utc
+WO-001,RZ-001,Asian Elephant,wildlife,94.5,11.302,76.416,Camera trap + ranger report,verified,2026-10-12T08:30:00Z
+WO-002,RZ-002,Tiger,wildlife,91.2,22.338,80.745,Thermal camera,active,2026-10-12T09:15:00Z
+WO-003,RZ-003,One-horned Rhino,wildlife,88.7,26.575,93.181,Drone survey,monitored,2026-10-12T07:45:00Z
+WO-004,RZ-004,Bengal Tiger,wildlife,93.1,22.021,88.894,Sensor + patrol,verified,2026-10-12T10:10:00Z
+WO-005,RZ-005,Asian Elephant,wildlife,96.0,11.298,76.422,Sentinel-2 + ranger report,verified,2026-10-12T11:00:00Z

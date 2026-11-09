@@ -1,0 +1,256 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: forest
+    description: Forest monitoring operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /forest/overview:
+    get:
+      operationId: getForestOverview
+      tags: [forest]
+      summary: Get forest monitoring overview
+      responses:
+        "200":
+          description: Monitoring overview
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForestOverview"
+  /forest/risk-zones:
+    get:
+      operationId: getRiskZones
+      tags: [forest]
+      summary: List monitored risk zones
+      responses:
+        "200":
+          description: Risk zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RiskZone"
+  /forest/observations:
+    get:
+      operationId: getObservations
+      tags: [forest]
+      summary: List wildlife and vegetation observations
+      parameters:
+        - name: type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, wildlife, vegetation]
+            default: all
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: Observations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Observation"
+    post:
+      operationId: createObservation
+      tags: [forest]
+      summary: Record a wildlife or vegetation observation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ObservationInput"
+      responses:
+        "201":
+          description: Observation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Observation"
+  /forest/alerts:
+    get:
+      operationId: getAlerts
+      tags: [forest]
+      summary: List forest department alerts
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [all, open, acknowledged, resolved]
+            default: all
+      responses:
+        "200":
+          description: Alerts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ForestAlert"
+  /forest/alerts/{id}:
+    patch:
+      operationId: updateAlert
+      tags: [forest]
+      summary: Update an alert status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AlertUpdate"
+      responses:
+        "200":
+          description: Alert updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ForestAlert"
+        "404":
+          description: Alert not found
+  /forest/activity:
+    get:
+      operationId: getForestActivity
+      tags: [forest]
+      summary: List recent monitoring activity
+      responses:
+        "200":
+          description: Recent activity
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ForestOverview:
+      type: object
+      required: [lastUpdated, monitoredArea, highRiskZones, activeAlerts, wildlifeSignals, vegetationChange, trend]
+      properties:
+        lastUpdated: { type: string }
+        monitoredArea: { type: number }
+        highRiskZones: { type: integer }
+        activeAlerts: { type: integer }
+        wildlifeSignals: { type: integer }
+        vegetationChange: { type: number }
+        trend:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrendPoint"
+    TrendPoint:
+      type: object
+      required: [label, risk, vegetation]
+      properties:
+        label: { type: string }
+        risk: { type: number }
+        vegetation: { type: number }
+    RiskZone:
+      type: object
+      required: [id, name, region, risk, riskType, change, area, coordinates, updatedAt]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        region: { type: string }
+        risk: { type: number }
+        riskType: { type: string, enum: [wildfire, deforestation, ecological] }
+        change: { type: number }
+        area: { type: number }
+        coordinates:
+          type: array
+          items: { type: number }
+        updatedAt: { type: string }
+    Observation:
+      type: object
+      required: [id, type, subject, location, confidence, recordedAt, source]
+      properties:
+        id: { type: integer }
+        type: { type: string, enum: [wildlife, vegetation] }
+        subject: { type: string }
+        location: { type: string }
+        confidence: { type: number }
+        recordedAt: { type: string }
+        source: { type: string }
+        status: { type: string, enum: [verified, review, emerging] }
+    ObservationInput:
+      type: object
+      required: [type, subject, location, confidence, source]
+      properties:
+        type: { type: string, enum: [wildlife, vegetation] }
+        subject: { type: string, minLength: 1 }
+        location: { type: string, minLength: 1 }
+        confidence: { type: number, minimum: 0, maximum: 100 }
+        source: { type: string, minLength: 1 }
+    ForestAlert:
+      type: object
+      required: [id, title, description, severity, location, status, createdAt, signal]
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        severity: { type: string, enum: [critical, high, medium, low] }
+        location: { type: string }
+        status: { type: string, enum: [open, acknowledged, resolved] }
+        createdAt: { type: string }
+        signal: { type: string }
+    AlertUpdate:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string, enum: [open, acknowledged, resolved] }
+    ActivityItem:
+      type: object
+      required: [id, label, detail, timestamp, tone]
+      properties:
+        id: { type: integer }
+        label: { type: string }
+        detail: { type: string }
+        timestamp: { type: string }
+        tone: { type: string, enum: [green, amber, red, blue] }
+

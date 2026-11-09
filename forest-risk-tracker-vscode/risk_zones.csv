@@ -1,0 +1,6 @@
+zone_id,zone_name,state,lat,lon,risk_type,risk_score,forest_area_ha,key_species,status,source,last_updated
+RZ-001,Silent Valley North,Kerala,11.304,76.416,ecological,78.4,1240,"Asian Elephant, Gaur",active,Sentinel-2 + SAR + Ranger report,2026-10-12
+RZ-002,Kanha East Buffer,Madhya Pradesh,22.338,80.745,deforestation,89.1,1760,"Tiger, Leopard",critical,U-Net canopy loss + SAR delta,2026-10-12
+RZ-003,Kaziranga Wetlands,Assam,26.573,93.183,flooding,67.8,940,"One-horned Rhino, Elephant",high,NDWI + rainfall anomaly,2026-10-12
+RZ-004,Sundarbans Fringe,West Bengal,22.023,88.892,salinity,82.2,1525,"Bengal Tiger, Saltwater Crocodile",critical,Surface water salinity + NDVI stress,2026-10-12
+RZ-005,Nilgiri Tea Estate Corridor,Tamil Nadu,11.298,76.422,human_wildlife_conflict,74.9,1115,"Asian Elephant, Gaur",high,Trajectory forecast + geofence proximity,2026-10-12
